@@ -9,31 +9,33 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Environment Variables থেকে URL নেওয়া
 const MAIN_URL = process.env.VITE_ERP_URL_MAIN || 'http://180.92.235.190:8022';
 const BACKUP_URL = process.env.VITE_ERP_URL_BACKUP || 'http://103.231.177.24:8022';
 
-// 1. মেইন সার্ভারের জন্য প্রোক্সি
+// 1. মেইন সার্ভার প্রোক্সি (আপডেট করা হয়েছে)
 app.use('/erp', createProxyMiddleware({
     target: MAIN_URL,
     changeOrigin: true,
-    pathRewrite: { '^/erp': '' },
+    secure: false,
+    cookieDomainRewrite: "", // কুকি ডোমেইন ফিক্স (Session ধরে রাখার জন্য)
+    // pathRewrite: { '^/erp': '' }, // এই লাইনটি বন্ধ করা হলো কারণ লোকাল সেটিংসে /erp ছিল
     onProxyReq: (proxyReq) => {
-        // কোনো স্পেশাল হেডার থাকলে এখানে সেট করা যাবে
+        // ব্রাউজার সেজে রিকোয়েস্ট পাঠানো
+        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
     }
 }));
 
-// 2. ব্যাকআপ সার্ভারের জন্য প্রোক্সি
+// 2. ব্যাকআপ সার্ভার প্রোক্সি (আপডেট করা হয়েছে)
 app.use('/erp-backup', createProxyMiddleware({
     target: BACKUP_URL,
     changeOrigin: true,
-    pathRewrite: { '^/erp-backup': '' }
+    secure: false,
+    cookieDomainRewrite: "" // কুকি ডোমেইন ফিক্স
+    // pathRewrite: { '^/erp-backup': '' } // এটিও বন্ধ রাখা হলো
 }));
 
-// 3. React এর তৈরি করা ফাইলগুলো সার্ভ করা
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// ফিক্স: স্ট্রিং এর বদলে Regex ব্যবহার করা হয়েছে যা ১০০% কাজ করবে
 app.get(/.*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
