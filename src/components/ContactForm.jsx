@@ -18,7 +18,6 @@ const FullPageLoader = ({ status }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-xl">
     <div className="relative">
       <motion.div className="w-24 h-24 border-4 border-cyan-500/30 rounded-full" animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} />
-      <motion.div className="absolute top-0 left-0 w-24 h-24 border-t-4 border-cyan-400 rounded-full" animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }} />
       <div className="absolute inset-0 flex items-center justify-center"><FiDatabase className="text-3xl text-cyan-400 animate-pulse" /></div>
     </div>
     <h2 className="mt-8 text-xl font-bold text-white tracking-widest uppercase">{status}</h2>
@@ -27,11 +26,9 @@ const FullPageLoader = ({ status }) => (
 
 const ResultDashboard = ({ data, onReset }) => (
   <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-lg bg-slate-900/80 backdrop-blur-2xl border border-slate-700/50 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
-    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-500 via-emerald-400 to-green-500"></div>
     <div className="text-center mb-8">
       <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-green-500/50"><FiCheckCircle className="text-4xl text-green-400" /></div>
-      <h2 className="text-2xl md:text-3xl font-bold text-white">Success!</h2>
-      <p className="text-slate-400 text-sm mt-2">Bundle data saved successfully</p>
+      <h2 className="text-2xl md:text-3xl font-bold text-white">Entry Successful!</h2>
     </div>
     <div className="bg-slate-800/50 rounded-xl p-6 border border-slate-700/50 mb-8">
       <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-700/50">
@@ -44,10 +41,10 @@ const ResultDashboard = ({ data, onReset }) => (
       </div>
     </div>
     <div className="grid grid-cols-2 gap-4 mb-8">
-      <a href={data.report1_url} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl transition-all"><FiPrinter className="text-2xl text-purple-400 mb-2" /><span className="text-xs font-bold text-slate-300 uppercase">Call List</span></a>
-      <a href={data.report2_url} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl transition-all"><FiPrinter className="text-2xl text-cyan-400 mb-2" /><span className="text-xs font-bold text-slate-300 uppercase">Challan</span></a>
+      <a href={data.report1_url} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl"><FiPrinter className="text-2xl text-purple-400 mb-2" /><span className="text-xs font-bold text-slate-300 uppercase">Call List</span></a>
+      <a href={data.report2_url} target="_blank" rel="noreferrer" className="flex flex-col items-center justify-center p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl"><FiPrinter className="text-2xl text-cyan-400 mb-2" /><span className="text-xs font-bold text-slate-300 uppercase">Challan</span></a>
     </div>
-    <button onClick={onReset} className="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all"><FiArrowLeft /> Input Another</button>
+    <button onClick={onReset} className="w-full py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-bold flex items-center justify-center gap-2"><FiArrowLeft /> Input Another</button>
   </motion.div>
 );
 
@@ -80,16 +77,15 @@ const CustomDropdown = ({ icon: Icon, label, selected, setSelected, options }) =
 };
 
 const InputField = ({ icon: Icon, label, type, id, value, onChange }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  return (
-    <div className="relative mb-6 z-0">
-       <div className="absolute top-[-8px] left-3 bg-cyan-950 px-2 py-0.5 text-[9px] md:text-[10px] font-bold text-cyan-400 z-10 uppercase tracking-widest border border-cyan-900 rounded-md">{label}</div>
-      <div className={`relative flex items-center w-full h-[55px] md:h-[70px] bg-slate-900/60 backdrop-blur-md border rounded-lg transition-all duration-300 ${isFocused ? "border-cyan-500 ring-2 ring-cyan-500/20" : "border-slate-700"}`}>
-        <div className={`pl-4 md:pl-5 text-xl md:text-2xl ${isFocused || value ? "text-cyan-400" : "text-slate-500"}`}><Icon /></div>
-        <input type={type} id={id} value={value} onChange={onChange} onFocus={() => setIsFocused(true)} onBlur={() => setIsFocused(false)} className="w-full h-full pl-3 md:pl-6 pr-4 text-white text-sm md:text-lg font-medium outline-none bg-transparent placeholder-transparent" />
+    return (
+      <div className="relative mb-6 z-0">
+         <div className="absolute top-[-8px] left-3 bg-cyan-950 px-2 py-0.5 text-[9px] md:text-[10px] font-bold text-cyan-400 z-10 uppercase tracking-widest border border-cyan-900 rounded-md">{label}</div>
+        <div className="relative flex items-center w-full h-[55px] md:h-[70px] bg-slate-900/60 backdrop-blur-md border border-slate-700 rounded-lg">
+          <div className="pl-4 md:pl-5 text-xl md:text-2xl text-cyan-400"><Icon /></div>
+          <input type={type} id={id} value={value} onChange={onChange} className="w-full h-full pl-3 md:pl-6 pr-4 text-white text-sm md:text-lg font-medium outline-none bg-transparent placeholder-transparent" />
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 const ContactForm = () => {
@@ -105,9 +101,10 @@ const ContactForm = () => {
   const isSessionActive = useRef(false);
   const ERP_USER = import.meta.env.VITE_ERP_USER;
   const ERP_PASS = import.meta.env.VITE_ERP_PASS;
-  const MAIN_URL = "/erp";
+  const currentBaseUrl = useRef("/erp");
   const BACKUP_URL_PROXY = "/erp-backup";
-  const currentBaseUrl = useRef(MAIN_URL);
+  const REAL_URL_MAIN = import.meta.env.VITE_ERP_URL_MAIN;
+  const REAL_URL_BACKUP = import.meta.env.VITE_ERP_URL_BACKUP;
   
   const companyList = ["COTTON CLUB BD LTD", "COTTON CLOTHING BD LTD", "COTTON CLOUT BD LTD", "TROPICAL KNITRX LTD"];
 
@@ -118,12 +115,15 @@ const ContactForm = () => {
   };
 
   const performLogin = async () => {
-    const reqOptions = { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, credentials: 'include' };
-    await fetch(`${currentBaseUrl.current}/login.php`, { ...reqOptions, body: toFormData({ txt_userid: ERP_USER, txt_password: ERP_PASS, submit: 'Login' }) });
-    
+    // 1. LOGIN (Python Step 1)
+    await fetch(`${currentBaseUrl.current}/login.php`, {
+      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: toFormData({ txt_userid: ERP_USER, txt_password: ERP_PASS, submit: 'Login' })
+    });
+    // 2. SESSION ACTIVATE (Python Step 2)
     await Promise.all([
-      fetch(`${currentBaseUrl.current}/tools/valid_user_action.php?menuid=724`, { credentials: 'include' }),
-      fetch(`${currentBaseUrl.current}/includes/common_functions_for_js.php?data=724_7_406&action=create_menu_session`, { credentials: 'include' })
+      fetch(`${currentBaseUrl.current}/tools/valid_user_action.php?menuid=724`),
+      fetch(`${currentBaseUrl.current}/includes/common_functions_for_js.php?data=724_7_406&action=create_menu_session`)
     ]);
     isSessionActive.current = true;
   };
@@ -135,10 +135,10 @@ const ContactForm = () => {
 
     if(!isRetry) { setApiError(""); setApiResponse(null); setIsLoading(true); }
     if(usingBackup) setStatusMsg("USING BACKUP SERVER...");
-    else if(!isSessionActive.current) setStatusMsg("AUTHENTICATING...");
-    else if(isRetry) setStatusMsg("RE-CONNECTING...");
-    else setStatusMsg("PROCESSING...");
+    else if(!isSessionActive.current) setStatusMsg("CONNECTING TO ERP...");
+    else setStatusMsg("PROCESSING CHALLAN...");
 
+    // 3. LOGIC SETUP (Manual Selection)
     let cbo_logic = "1";
     if (selectedCompany === "COTTON CLUB BD LTD") cbo_logic = "1";
     else if (selectedCompany === "COTTON CLOTHING BD LTD") cbo_logic = "2";
@@ -150,7 +150,8 @@ const ContactForm = () => {
 
       const ctrlUrl = `${currentBaseUrl.current}/production/requires/bundle_wise_cutting_delevar_to_input_controller.php`;
       
-      const searchRes = await fetch(`${ctrlUrl}?data=${challanNo}_0__${cbo_logic}_2__1_&action=create_challan_search_list_view`, { credentials: 'include' });
+      // 4. SEARCH (Python Step 4)
+      const searchRes = await fetch(`${ctrlUrl}?data=${challanNo}_0__${cbo_logic}_2__1_&action=create_challan_search_list_view`);
       const searchText = await searchRes.text();
 
       if (searchText.includes("txt_userid") || searchText.includes("Login")) {
@@ -163,14 +164,17 @@ const ContactForm = () => {
       if (!sysIdMatch) throw new Error("Invalid Challan / No Data Found");
       const sys_id = sysIdMatch[1];
 
+      // 6. POPULATE (Python Step 6)
       const popRes = await fetch(`${ctrlUrl}?data=${sys_id}&action=populate_data_from_challan_popup`, {
         method: 'POST', headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: toFormData({ rndval: Date.now() }), credentials: 'include'
+        body: toFormData({ rndval: Date.now() })
       });
       const popText = await popRes.text();
 
+      // 🔥 PYTHON REGEX IMPLEMENTATION 🔥 (Python Step 7)
+      // Python: r".*?\.val\(\s*['\"]?([^'\")]+)['\"]?\s*\)"
       const getVal = (id) => {
-        const regex = new RegExp(id + `.*?\\.val\\(\\s*['"]?([^'")]+)['"]?\\s*\\)`);
+        const regex = new RegExp(id + ".*?\\.val\\(\\s*['\"]?([^'\")]+)['\"]?\\s*\\)");
         const m = popText.match(regex);
         return m ? m[1].trim() : '0';
       };
@@ -181,15 +185,19 @@ const ContactForm = () => {
       const location = getVal("cbo_location");
       const floor = getVal("cbo_floor");
 
-      if ([source, emb_company, line, location].some(x => x === '0' || x === '' || x === 'undefined')) {
-        throw new Error("Validation Failed: Missing Source/Line Info.");
+      // 🔥 PYTHON STRICT VALIDATION 🔥 (Python Step 8)
+      const forbidden = ['0', '00', '', 'undefined', 'null'];
+      if (forbidden.includes(source) || forbidden.includes(line)) {
+        throw new Error("Validation Failed: Missing Source/Line (Code 10)");
       }
 
-      const bunRes = await fetch(`${ctrlUrl}?data=${sys_id}&action=bundle_nos`, { credentials: 'include' });
+      // 9. BUNDLE LIST (Python Step 9)
+      const bunRes = await fetch(`${ctrlUrl}?data=${sys_id}&action=bundle_nos`);
       const raw_bun = (await bunRes.text()).split("**")[0];
       if (!raw_bun) throw new Error("Empty Bundle List");
 
-      const tblRes = await fetch(`${ctrlUrl}?data=${raw_bun}**0**${sys_id}**${cbo_logic}**${line}&action=populate_bundle_data_update`, { credentials: 'include' });
+      // 10. TABLE DATA (Python Step 10)
+      const tblRes = await fetch(`${ctrlUrl}?data=${raw_bun}**0**${sys_id}**${cbo_logic}**${line}&action=populate_bundle_data_update`);
       const rows = (await tblRes.text()).split('<tr');
       const b_data = [];
       
@@ -206,7 +214,8 @@ const ContactForm = () => {
         });
       });
 
-      setStatusMsg("SAVING DATA...");
+      // 11. SAVE PAYLOAD (Python Step 5 & 11)
+      setStatusMsg("SAVING TO ERP...");
       const now = new Date();
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       const fmtDate = `${now.getDate().toString().padStart(2,'0')}-${months[now.getMonth()]}-${now.getFullYear()}`;
@@ -234,7 +243,7 @@ const ContactForm = () => {
 
       const saveRes = await fetch(`${currentBaseUrl.current}/production/requires/bundle_wise_sewing_input_controller.php`, {
         method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: toFormData(payload), credentials: 'include'
+        body: toFormData(payload)
       });
       const saveText = await saveRes.text();
 
@@ -244,11 +253,13 @@ const ContactForm = () => {
         if (code === "0") {
             const new_sys_id = parts[1];
             const new_challan = parts[2] || "Sewing Challan";
+            
+            // Correct Print Link Generation
             const PRINT_BASE = usingBackup ? BACKUP_URL_PROXY : MAIN_URL;
             const u1 = `${PRINT_BASE}/production/requires/bundle_wise_sewing_input_controller.php?data=1*${new_sys_id}*3*%E2%9D%8F%20Bundle%20Wise%20Sewing%20Input*1*undefined*undefined*undefined&action=emblishment_issue_print_13`;
             const u2 = `${PRINT_BASE}/production/requires/bundle_wise_sewing_input_controller.php?data=1*${new_sys_id}*3*%E2%9D%8F%20Bundle%20Wise%20Sewing%20Input*undefined*undefined*undefined*1&action=sewing_input_challan_print_5`;
             
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 1000));
             setApiResponse({ challan_no: new_challan, system_id: new_sys_id, report1_url: u1, report2_url: u2 });
             setShowResult(true);
         } else if (code === "20") throw new Error("Bundle Already Scanned!");
