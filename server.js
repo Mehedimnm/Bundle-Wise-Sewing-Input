@@ -12,28 +12,38 @@ const PORT = process.env.PORT || 3000;
 const MAIN_URL = process.env.VITE_ERP_URL_MAIN || 'http://180.92.235.190:8022';
 const BACKUP_URL = process.env.VITE_ERP_URL_BACKUP || 'http://103.231.177.24:8022';
 
-// 1. মেইন সার্ভার প্রোক্সি (আপডেট করা হয়েছে)
+// কুকি ফিক্স করার ফাংশন
+const cookieFix = (proxyRes, req, res) => {
+    if (proxyRes.headers['set-cookie']) {
+        proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie'].map(cookie => {
+            return cookie
+                .replace(/; secure/gi, '') // HTTP তে Secure ফ্ল্যাগ সরাচ্ছে
+                .replace(/; SameSite=None/gi, '; SameSite=Lax'); // সেফটির জন্য Lax
+        });
+    }
+};
+
+// 1. মেইন সার্ভার প্রোক্সি
 app.use('/erp', createProxyMiddleware({
     target: MAIN_URL,
     changeOrigin: true,
     secure: false,
-    cookieDomainRewrite: "", // কুকি ডোমেইন ফিক্স (Session ধরে রাখার জন্য)
-    // pathRewrite: { '^/erp': '' }, // এই লাইনটি বন্ধ করা হলো কারণ লোকাল সেটিংসে /erp ছিল
-    onProxyReq: (proxyReq) => {
-        // ব্রাউজার সেজে রিকোয়েস্ট পাঠানো
-        proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
-    }
+    pathRewrite: { '^/erp': '' }, // এই লাইনটি জাদুর মতো কাজ করবে (লিংক ঠিক করবে)
+    onProxyRes: cookieFix,
+    logLevel: 'debug' // Render লগে ডিটেইলস দেখার জন্য
 }));
 
-// 2. ব্যাকআপ সার্ভার প্রোক্সি (আপডেট করা হয়েছে)
+// 2. ব্যাকআপ সার্ভার প্রোক্সি
 app.use('/erp-backup', createProxyMiddleware({
     target: BACKUP_URL,
     changeOrigin: true,
     secure: false,
-    cookieDomainRewrite: "" // কুকি ডোমেইন ফিক্স
-    // pathRewrite: { '^/erp-backup': '' } // এটিও বন্ধ রাখা হলো
+    pathRewrite: { '^/erp-backup': '' }, // এখানেও লিংক ঠিক করা হলো
+    onProxyRes: cookieFix,
+    logLevel: 'debug'
 }));
 
+// 3. ফ্রন্টএন্ড সার্ভ করা
 app.use(express.static(path.join(__dirname, 'dist')));
 
 app.get(/.*/, (req, res) => {
