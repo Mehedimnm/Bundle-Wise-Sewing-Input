@@ -33,8 +33,8 @@ app.use('/erp-backup', createProxyMiddleware({
 // 3. React এর তৈরি করা ফাইলগুলো সার্ভ করা
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// যেকোনো রুটে হিট করলে index.html পাঠানো (React Router এর জন্য)
-app.get('*', (req, res) => {
+// ফিক্স: '*' এর বদলে '(.*)' ব্যবহার করা হয়েছে
+app.get('(.*)', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
